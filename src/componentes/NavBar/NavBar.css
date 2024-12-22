@@ -1,0 +1,12 @@
+header {
+  display: flex;
+  align-itmas: center;
+  justify-content: space-between;
+  border-bottom: 1px solid grey;    
+}
+
+li {
+  display:inline-block;
+  margin: 10px;      
+
+}
