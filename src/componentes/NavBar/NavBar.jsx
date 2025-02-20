@@ -1,18 +1,20 @@
 import React from 'react'
 import './NavBar.css'
 import CartWidget from '../CarWidget/CartWidget'
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 const NavBar = () => {
   return (
     <header>
-      <h1>Christmas Cottage</h1>
+      <Link to="/">
+        <img className='logoxmas' src={"../img/logo.png"} alt="Logo Xmas-Cottage" />
+      </Link>
       <nav>
         <ul>
-          <li><Link to="/categoria/1">Arboles</Link></li>
-          <li><Link to="/categoria/2">Luces</Link></li>
-          <li><Link to="/categoria/3">Adornos</Link></li>
-          <li><Link to="/categoria/4">Botas de Navidad</Link></li>  
+          <li><NavLink to="/categoria/Arboles">Arboles</NavLink></li>
+          <li><NavLink to="/categoria/Luces">Luces</NavLink></li>
+          <li><NavLink to="/categoria/Adornos">Adornos</NavLink></li>
+          <li><NavLink to="/categoria/Botas">Botas de Navidad</NavLink></li>  
         </ul>
       </nav>    
 

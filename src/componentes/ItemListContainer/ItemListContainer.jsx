@@ -1,33 +1,42 @@
-import React, { useEffect, useState } from 'react';
-import { getProductos } from '../../asyncmock';
-import ItemList from '../ItemList/ItemList';
-import { useParams } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import ItemList from "../ItemList/ItemList";
+import { useParams } from "react-router-dom";
+import { db } from "../../services/config";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import Loader from "../Loader/Loader";
 
-const ItemListContainer = (props) => {
-  const [productos, setProductos] = useState([]);
-  const { id } = useParams();
+const ItemListContainer = () => {
+    const [productos, setProductos] = useState([]);
+    const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    getProductos()
-      .then((respuesta) => {
-        if (id) {
-          const productosFiltrados = respuesta.filter(
-            (producto) => producto.categoria === Number(id) // Comparar con id numérico
-          );
-          setProductos(productosFiltrados);
-        } else {
-          setProductos(respuesta);
-        }
-      })
-      .catch((error) => console.log(error));
-  }, [id]);
+    const {idCategoria} = useParams();
 
-  return (
-    <div>
-      <h2>{id ? `Productos de la categoría: ${id}` : 'Todos los productos'}</h2>
-      <ItemList productos={productos} />
-    </div>
-  );
-};
+    useEffect(()=>{
+        setLoading(true)
+        const misProductos = idCategoria ? query(collection(db,"productos"), where ("categoria", "==", idCategoria)) : collection(db, "productos")
+
+        getDocs(misProductos)
+          .then(res => {
+            const nuevosProductos = res.docs.map(doc => {
+                const data= doc.data()
+                return {id: doc.id, ...data}
+            })
+            setProductos(nuevosProductos)
+          })
+          .catch(error => console.log(error))
+          .finally(() => { 
+            console.log("Proceso terminado");
+            setLoading(false)
+        })
+    },[idCategoria])
+
+
+    return (
+        <>
+            <h2 style={{ textAlign: "center" }}>Mis Productos</h2>
+            {loading ? <Loader/> : <ItemList productos={productos}/>}
+        </>
+    )
+}
 
 export default ItemListContainer

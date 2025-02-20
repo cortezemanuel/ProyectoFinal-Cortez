@@ -1,16 +1,45 @@
-import React from 'react'
-import "./ItemDetail.css"
+import { useState } from 'react';
+import Contador from '../Contador/Contador';
+import { Link } from 'react-router-dom';
+import './ItemDetail.css'
 
-const ItemDetail = ({id, nombre, precio, img}) => {
+import { CarritoContext } from '../../context/CarritoContext';
+import { useContext } from 'react';
+import { toast } from 'react-toastify';
+
+const ItemDetail = ({ id, nombre, stock, precio, img, descripcion }) => {
+
+  const {agregarAlCarrito} = useContext(CarritoContext)
+
+  
+  const [agregarCantidad, setAgregarCantidad] = useState(0);
+
  
+
+  const manejadorCantidad = (cantidad) => {
+    setAgregarCantidad(cantidad);
+
+    const item = {id,nombre, precio}
+    agregarAlCarrito(item,cantidad)
+    toast.success("🎅🏻 Su compra fue enviada al carrito", {autoClose: 1000,theme: "light", position: "top-center"})
+  }
+
 
   return (
     <div className='contenedorItem'>
-          <h2>Nombre: {nombre}</h2>
-          <h3>Precio: {precio}</h3>
-          <h3>ID: {id}</h3>
-          <img src={img} alt={nombre} />
-          <p>I don't want a lot for Christmas, There is just one thing I need (and I), Don't care about the presents underneath the Christmas tree, I don't need to hang my stocking there upon the fireplace, Santa Claus won't make me happy with a toy on Christmas Day.</p>
+      <h2>Nombre: {nombre} </h2>
+      <h3>Precio: {precio} </h3>
+      <h3>ID: {id} </h3>
+      <img src={img} alt={nombre} />
+      <p> {descripcion}</p>
+
+
+      {
+        agregarCantidad > 0 ? (<Link to="/cart">Terminar Compra</Link>) : (<Contador inicial={1} stock={stock} funcionAgregar={manejadorCantidad}/>)
+      }
+
+
+
     </div>
   )
 }
